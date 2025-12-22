@@ -1,10 +1,14 @@
 import Database from "@tauri-apps/plugin-sql";
 
 const DB_NAME = "pomodoro_habit.db";
+let dbInstance: Database | null = null;
 
 export const initDB = async () => {
   try {
+    if (dbInstance) return dbInstance;
+
     const db = await Database.load(`sqlite:${DB_NAME}`);
+    dbInstance = db;
 
     // Create Tables
     await db.execute(`
@@ -73,5 +77,6 @@ export const initDB = async () => {
 };
 
 export const getDB = async () => {
-  return await Database.load(`sqlite:${DB_NAME}`);
+  if (dbInstance) return dbInstance;
+  return await initDB();
 };

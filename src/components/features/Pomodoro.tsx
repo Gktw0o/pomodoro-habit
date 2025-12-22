@@ -60,7 +60,7 @@ export function Pomodoro() {
 
       {/* Timer Display */}
       <div className="relative mb-8">
-        {/* Circular Progress (Simplified as border for now, can be SVG) */}
+        {/* Circular Progress */}
         <div className="w-64 h-64 rounded-full border-8 border-zinc-100 dark:border-zinc-800 flex items-center justify-center relative">
            <svg className="absolute inset-0 transform -rotate-90 w-full h-full" viewBox="0 0 100 100">
              <circle
@@ -117,7 +117,7 @@ export function Pomodoro() {
 
       {/* Settings Panel */}
       {showSettings && (
-        <div className="w-full mt-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 animate-in fade-in slide-in-from-top-4">
+        <div className="w-full mt-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 animate-in fade-in slide-in-from-top-4 space-y-4">
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-xs font-medium text-zinc-500">Work</label>
@@ -144,6 +144,37 @@ export function Pomodoro() {
                 value={settings.longBreakDuration}
                 onChange={(e) => updateSettings({ longBreakDuration: Number(e.target.value) })}
                 className="w-full p-2 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-center"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-3 pt-2 border-t border-zinc-200 dark:border-zinc-700">
+            <div className="flex items-center justify-between">
+              <label className="text-sm text-zinc-600 dark:text-zinc-300">Long Break Interval</label>
+              <input
+                type="number"
+                min="1"
+                value={settings.longBreakInterval}
+                onChange={(e) => updateSettings({ longBreakInterval: Number(e.target.value) })}
+                className="w-16 p-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-center text-sm"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <label className="text-sm text-zinc-600 dark:text-zinc-300">Auto-start Breaks</label>
+              <input
+                type="checkbox"
+                checked={settings.autoStartBreaks}
+                onChange={(e) => updateSettings({ autoStartBreaks: e.target.checked })}
+                className="w-5 h-5 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <label className="text-sm text-zinc-600 dark:text-zinc-300">Auto-start Pomodoros</label>
+              <input
+                type="checkbox"
+                checked={settings.autoStartPomodoros}
+                onChange={(e) => updateSettings({ autoStartPomodoros: e.target.checked })}
+                className="w-5 h-5 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
               />
             </div>
           </div>

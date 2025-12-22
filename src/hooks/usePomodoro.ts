@@ -7,6 +7,7 @@ interface PomodoroSettings {
   workDuration: number; // in minutes
   shortBreakDuration: number;
   longBreakDuration: number;
+  longBreakInterval: number; // Number of work sessions before long break
   autoStartBreaks: boolean;
   autoStartPomodoros: boolean;
 }
@@ -15,6 +16,7 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   workDuration: 25,
   shortBreakDuration: 5,
   longBreakDuration: 15,
+  longBreakInterval: 4,
   autoStartBreaks: false,
   autoStartPomodoros: false,
 };
@@ -24,6 +26,7 @@ export const usePomodoro = () => {
   const [timeLeft, setTimeLeft] = useState(DEFAULT_SETTINGS.workDuration * 60);
   const [isActive, setIsActive] = useState(false);
   const [settings, setSettings] = useState<PomodoroSettings>(DEFAULT_SETTINGS);
+  const [sessionsCompleted, setSessionsCompleted] = useState(0);
   
   // Use a ref for the timer interval to clear it properly
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -56,7 +59,6 @@ export const usePomodoro = () => {
   }, [mode, settings, isActive]);
 
   const saveSession = useCallback(async (duration: number) => {
-    if (mode !== 'work') return; // Only save work sessions
     try {
       const db = await getDB();
       await db.execute(
@@ -66,33 +68,51 @@ export const usePomodoro = () => {
     } catch (error) {
       console.error('Failed to save session:', error);
     }
-  }, [mode]);
+  }, []);
+
+  const switchMode = useCallback((newMode: PomodoroMode) => {
+    setMode(newMode);
+    // timeLeft will be updated by the useEffect listening to 'mode'
+  }, []);
 
   useEffect(() => {
     if (isActive && timeLeft > 0) {
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
-    } else if (timeLeft === 0) {
+    } else if (timeLeft === 0 && isActive) {
       // Timer finished
       setIsActive(false);
       if (timerRef.current) clearInterval(timerRef.current);
       
-      // Play sound (placeholder)
-      // new Audio('/notification.mp3').play().catch(() => {});
+      // Play sound
+      const audio = new Audio('/notification.mp3'); // Ensure this file exists in public/
+      audio.play().catch(() => {});
 
-      // Save session if it was a work session
       if (mode === 'work') {
         saveSession(settings.workDuration);
-      }
+        const newSessionsCompleted = sessionsCompleted + 1;
+        setSessionsCompleted(newSessionsCompleted);
 
-      // Auto-switch logic could go here
+        // Decide next mode
+        if (newSessionsCompleted % settings.longBreakInterval === 0) {
+          switchMode('longBreak');
+          if (settings.autoStartBreaks) setIsActive(true);
+        } else {
+          switchMode('shortBreak');
+          if (settings.autoStartBreaks) setIsActive(true);
+        }
+      } else {
+        // Break finished
+        switchMode('work');
+        if (settings.autoStartPomodoros) setIsActive(true);
+      }
     }
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isActive, timeLeft, mode, settings, saveSession]);
+  }, [isActive, timeLeft, mode, settings, saveSession, sessionsCompleted, switchMode]);
 
   const toggleTimer = () => setIsActive(!isActive);
 
@@ -108,7 +128,6 @@ export const usePomodoro = () => {
   const changeMode = (newMode: PomodoroMode) => {
     setMode(newMode);
     setIsActive(false);
-    // timeLeft will be updated by the useEffect
   };
 
   const updateSettings = async (newSettings: Partial<PomodoroSettings>) => {
@@ -133,6 +152,7 @@ export const usePomodoro = () => {
     timeLeft,
     isActive,
     settings,
+    sessionsCompleted,
     toggleTimer,
     resetTimer,
     changeMode,

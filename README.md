@@ -53,6 +53,14 @@ A modern, all-in-one productivity application built with **Tauri**, **React**, a
 - [x] Goals Feature
 - [x] Settings (Theme & Background)
 
+### v0.1.1 (Bug Fixes & Improvements)
+- **Fix:** Resolved database connection issues preventing creation of Habits, Todos, and Goals.
+- **Fix:** Fixed theme switching not applying correctly.
+- **Fix:** Corrected Calendar stats aggregation.
+- **New:** Added configurable auto-transition between Pomodoro modes.
+- **New:** Added "Long Break Interval" setting to customize session count before long break.
+- **New:** Added sound notification (placeholder) on timer completion.
+
 ### v0.2.0 (Planned)
 - [ ] **Sound Notifications:** Custom sounds for timer completion.
 - [ ] **Habit Streaks:** Detailed streak counters and statistics.
