@@ -1,5 +1,3 @@
-import { Timer, CheckSquare, Flame, ListTodo } from 'lucide-react';
-
 export interface AchievementDef {
   id: string;
   title: string;

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type FeatureType = 'pomodoro' | 'habit' | 'calendar' | 'todo' | 'goals' | 'settings' | null;
+type FeatureType = 'pomodoro' | 'habit' | 'calendar' | 'todo' | 'goals' | 'settings' | 'profile' | null;
 
 interface AppState {
   activeModal: FeatureType;

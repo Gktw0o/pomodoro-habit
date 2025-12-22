@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { useProfile } from '@/hooks/useProfile';
-import { format } from 'date-fns';
 
 export function OnboardingModal() {
   const { profile, loading, createProfile } = useProfile();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [birthDate, setBirthDate] = useState('');
-  const [step, setStep] = useState(1);
 
   if (loading || profile) return null;
 

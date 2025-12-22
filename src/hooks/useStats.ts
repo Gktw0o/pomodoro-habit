@@ -22,9 +22,9 @@ export const useStats = () => {
 
   const calculateStreak = async (db: any) => {
     // Get all unique dates with completed habits
-    const result = await db.select<{ date: string }[]>(
+    const result = await db.select(
       'SELECT DISTINCT date FROM habit_logs WHERE completed = 1 ORDER BY date DESC'
-    );
+    ) as { date: string }[];
     
     if (result.length === 0) return { current: 0, longest: 0 };
 
@@ -46,7 +46,6 @@ export const useStats = () => {
       // Calculate current streak
       // This is a simplified logic. For strict consecutive days, we'd need to parse dates.
       // Assuming dates are sorted DESC
-      let lastDate = new Date(dates[0]);
       current = 1;
       
       for (let i = 0; i < dates.length - 1; i++) {
