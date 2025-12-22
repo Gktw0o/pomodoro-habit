@@ -5,7 +5,7 @@ import { open } from '@tauri-apps/plugin-dialog';
 import { readFile } from '@tauri-apps/plugin-fs';
 
 export const useSettings = () => {
-  const { theme, setTheme, backgroundImage, setBackgroundImage } = useAppStore();
+  const { theme, setTheme, backgroundImage, setBackgroundImage, notificationSound, setNotificationSound } = useAppStore();
   const [loading, setLoading] = useState(true);
 
   // Helper to read file as Base64
@@ -35,7 +35,7 @@ export const useSettings = () => {
       try {
         setLoading(true);
         const db = await getDB();
-        const result = await db.select<{ key: string, value: string }[]>('SELECT * FROM settings WHERE key IN (?, ?)', ['theme', 'background_image']);
+        const result = await db.select<{ key: string, value: string }[]>('SELECT * FROM settings WHERE key IN (?, ?, ?)', ['theme', 'background_image', 'notification_sound']);
         
         for (const row of result) {
           if (row.key === 'theme') {
@@ -50,6 +50,8 @@ export const useSettings = () => {
                  // Already a data URI or invalid
                  setBackgroundImage(savedValue);
             }
+          } else if (row.key === 'notification_sound') {
+            setNotificationSound(JSON.parse(row.value));
           }
         }
       } catch (error) {
@@ -137,10 +139,26 @@ export const useSettings = () => {
       await db.execute("DROP TABLE IF EXISTS habit_logs");
       await db.execute("DROP TABLE IF EXISTS pomodoro_sessions");
       await db.execute("DROP TABLE IF EXISTS goals");
+      await db.execute("DROP TABLE IF EXISTS user_profile");
+      await db.execute("DROP TABLE IF EXISTS achievements");
       // Force reload to re-init DB
       window.location.reload();
     } catch (error) {
       console.error('Failed to reset database:', error);
+    }
+  };
+
+  const updateNotificationSound = async (sound: string) => {
+    setNotificationSound(sound);
+    try {
+      const db = await getDB();
+      await db.execute(
+        `INSERT INTO settings (key, value) VALUES ('notification_sound', ?) 
+         ON CONFLICT(key) DO UPDATE SET value = ?`,
+        [JSON.stringify(sound), JSON.stringify(sound)]
+      );
+    } catch (error) {
+      console.error('Failed to save notification sound:', error);
     }
   };
 
@@ -151,6 +169,8 @@ export const useSettings = () => {
     clearBackgroundImage,
     backgroundImage,
     loading,
-    resetDatabase
+    resetDatabase,
+    notificationSound,
+    updateNotificationSound
   };
 };

@@ -61,8 +61,16 @@ A modern, all-in-one productivity application built with **Tauri**, **React**, a
 - **New:** Added "Long Break Interval" setting to customize session count before long break.
 - **New:** Added sound notification (placeholder) on timer completion.
 
+### v0.1.2 (Current)
+- **New:** User Onboarding & Profile System (Name, Birthday).
+- **New:** Birthday Celebration with confetti.
+- **New:** Seasonal Winter Snowfall effect (Dec-Feb).
+- **New:** Profile Page with comprehensive statistics (Total Time, Streaks).
+- **New:** Achievements System with unlock notifications.
+- **New:** Customizable Notification Sounds.
+- **New:** Android Support (Tauri Mobile initialized).
+
 ### v0.2.0 (Planned)
-- [ ] **Sound Notifications:** Custom sounds for timer completion.
 - [ ] **Habit Streaks:** Detailed streak counters and statistics.
 - [ ] **Data Export/Import:** Backup your data to JSON/CSV.
 - [ ] **Keyboard Shortcuts:** Global hotkeys for timer control.
@@ -103,10 +111,22 @@ A modern, all-in-one productivity application built with **Tauri**, **React**, a
     bun run tauri dev
     ```
 
-4.  **Build for Production:**
+4.  **Build for Production (Desktop):**
     ```bash
     bun run tauri build
     ```
+
+5.  **Build for Android:**
+    - Ensure Android Studio and SDK are installed.
+    - Connect an Android device or start an emulator.
+    - Run:
+      ```bash
+      bun run tauri android dev
+      ```
+    - For release APK:
+      ```bash
+      bun run tauri android build
+      ```
     The executable will be located in `src-tauri/target/release/bundle/nsis/`.
 
 ---

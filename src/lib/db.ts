@@ -72,6 +72,26 @@ export const initDB = async () => {
         );
       `);
 
+      await db.execute(`
+        CREATE TABLE IF NOT EXISTS user_profile (
+          id INTEGER PRIMARY KEY CHECK (id = 1),
+          first_name TEXT,
+          last_name TEXT,
+          birth_date TEXT,
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      await db.execute(`
+        CREATE TABLE IF NOT EXISTS achievements (
+          id TEXT PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
+          icon TEXT NOT NULL,
+          unlocked_at TEXT
+        );
+      `);
+
       console.log("Database initialized successfully");
       dbInstance = db;
       return db;

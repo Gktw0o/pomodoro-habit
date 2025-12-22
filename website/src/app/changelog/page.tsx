@@ -36,13 +36,63 @@ export default function Changelog() {
         </div>
 
         <div className="space-y-12">
-          {/* v0.1.1 */}
+          {/* v0.1.2 */}
           <div className="relative pl-8 border-l border-zinc-200">
             <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-blue-500 border-2 border-white ring-2 ring-blue-100"></div>
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
-                <h2 className="text-2xl font-bold">v0.1.1</h2>
+                <h2 className="text-2xl font-bold">v0.1.2</h2>
                 <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-medium border border-blue-200">Latest</span>
+                <span className="text-zinc-400 text-sm">December 23, 2025</span>
+              </div>
+              <p className="text-zinc-600">
+                Introducing personalization, gamification, and mobile support!
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-sm font-semibold text-zinc-900 uppercase tracking-wider mb-3">✨ New Features</h3>
+                <ul className="space-y-2 text-zinc-600">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0"></span>
+                    <span><strong>User Profiles:</strong> Create a personalized profile with your name and birthday.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0"></span>
+                    <span><strong>Birthday Celebration:</strong> A special confetti surprise on your birthday! 🎉</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0"></span>
+                    <span><strong>Profile Page:</strong> View detailed statistics including total focus time, habits completed, and current streak.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0"></span>
+                    <span><strong>Achievements System:</strong> Unlock badges for milestones like "100 Hours of Focus" or "50 Day Streak".</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0"></span>
+                    <span><strong>Seasonal Effects:</strong> Enjoy a cozy winter atmosphere with a subtle snowfall effect (active Dec-Feb).</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0"></span>
+                    <span><strong>Custom Sounds:</strong> Choose from multiple notification sounds (Soft Bell, Digital, Nature, etc.).</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0"></span>
+                    <span><strong>Android Support:</strong> Initial support for Android devices via Tauri Mobile.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* v0.1.1 */}
+          <div className="relative pl-8 border-l border-zinc-200">
+            <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-zinc-300 border-2 border-white"></div>
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-2">
+                <h2 className="text-2xl font-bold">v0.1.1</h2>
                 <span className="text-zinc-400 text-sm">December 23, 2025</span>
               </div>
               <p className="text-zinc-600">

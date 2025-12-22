@@ -1,9 +1,25 @@
 import { useSettings } from "@/hooks/useSettings";
-import { Moon, Sun, Monitor, Image as ImageIcon, Trash2 } from "lucide-react";
+import { Moon, Sun, Monitor, Image as ImageIcon, Trash2, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Settings() {
-  const { theme, updateTheme, selectBackgroundImage, clearBackgroundImage, backgroundImage, resetDatabase } = useSettings();
+  const { 
+    theme, 
+    updateTheme, 
+    selectBackgroundImage, 
+    clearBackgroundImage, 
+    backgroundImage, 
+    resetDatabase,
+    notificationSound,
+    updateNotificationSound
+  } = useSettings();
+
+  const sounds = [
+    { id: 'default', label: 'Default Beep' },
+    { id: 'bell', label: 'Soft Bell' },
+    { id: 'digital', label: 'Digital' },
+    { id: 'nature', label: 'Nature' },
+  ];
 
   const handleReset = async () => {
     if (confirm("Are you sure you want to delete all data? This cannot be undone.")) {
@@ -104,6 +120,43 @@ export function Settings() {
         </div>
       </section>
 
+      {/* Sound Section */}
+      <section className="space-y-4">
+        <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Sound</h3>
+        <div className="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-lg">
+              <Bell size={24} />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                Notification Sound
+              </p>
+              <p className="text-xs text-zinc-500">
+                Choose the sound to play when a timer finishes.
+              </p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-2">
+            {sounds.map((sound) => (
+              <button
+                key={sound.id}
+                onClick={() => updateNotificationSound(sound.id)}
+                className={cn(
+                  "px-4 py-2 text-sm rounded-lg border transition-all text-left",
+                  notificationSound === sound.id
+                    ? "bg-indigo-50 border-indigo-500 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
+                    : "bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+                )}
+              >
+                {sound.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Reset Data Section */}
       <section className="space-y-4">
         <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Data Management</h3>
@@ -129,7 +182,7 @@ export function Settings() {
 
       <div className="pt-8 text-center">
         <p className="text-xs text-zinc-400">
-          Pomodoro Habit v0.1.1 • Built with Tauri & React
+          Pomodoro Habit v0.1.2 • Built with Tauri & React
         </p>
       </div>
     </div>

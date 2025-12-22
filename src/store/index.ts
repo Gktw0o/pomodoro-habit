@@ -12,6 +12,9 @@ interface AppState {
   
   backgroundImage: string | null;
   setBackgroundImage: (url: string | null) => void;
+
+  notificationSound: string;
+  setNotificationSound: (sound: string) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -24,4 +27,7 @@ export const useAppStore = create<AppState>((set) => ({
   
   backgroundImage: null,
   setBackgroundImage: (url) => set({ backgroundImage: url }),
+
+  notificationSound: 'default',
+  setNotificationSound: (sound) => set({ notificationSound: sound }),
 }));

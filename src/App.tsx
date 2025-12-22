@@ -8,7 +8,8 @@ import {
   Calendar as CalendarIcon, 
   ListTodo, 
   Target, 
-  Settings as SettingsIcon 
+  Settings as SettingsIcon,
+  User
 } from "lucide-react";
 
 import { Pomodoro } from "@/components/features/Pomodoro";
@@ -17,12 +18,29 @@ import { Calendar } from "@/components/features/Calendar";
 import { TodoList } from "@/components/features/TodoList";
 import { Goals } from "@/components/features/Goals";
 import { Settings } from "@/components/features/Settings";
+import { Profile } from "@/components/features/Profile";
 import { useSettings } from "@/hooks/useSettings";
+import { SeasonalSnowfall } from "@/components/features/SeasonalSnowfall";
+
+import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
+import { BirthdayCelebration } from "@/components/onboarding/BirthdayCelebration";
+import { AchievementToast } from "@/components/features/AchievementToast";
 
 function App() {
   const { activeModal, openModal, closeModal } = useAppStore();
   const { backgroundImage } = useSettings(); 
   const [dbStatus, setDbStatus] = useState<"loading" | "connected" | "error">("loading");
+
+  // Disable context menu (right-click) globally
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+    document.addEventListener('contextmenu', handleContextMenu);
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, []);
 
   useEffect(() => {
     initDB()
@@ -39,6 +57,7 @@ function App() {
     { id: 'calendar', label: 'Calendar', icon: CalendarIcon, color: 'bg-blue-500' },
     { id: 'todo', label: 'Todos', icon: ListTodo, color: 'bg-orange-500' },
     { id: 'goals', label: 'Goals', icon: Target, color: 'bg-purple-500' },
+    { id: 'profile', label: 'Profile', icon: User, color: 'bg-indigo-500' },
     { id: 'settings', label: 'Settings', icon: SettingsIcon, color: 'bg-zinc-500' },
   ] as const;
 
@@ -54,6 +73,11 @@ function App() {
       
       {/* Overlay for readability if background exists */}
       {backgroundImage && <div className="absolute inset-0 z-0 bg-black/20 backdrop-blur-[2px]" />}
+
+      <SeasonalSnowfall />
+      <OnboardingModal />
+      <BirthdayCelebration />
+      <AchievementToast />
 
       {/* Main Content */}
       <main className="relative z-10 flex flex-col items-center justify-center min-h-screen p-8">
@@ -122,6 +146,15 @@ function App() {
         title="Goals"
       >
         <Goals />
+      </Modal>
+
+      <Modal 
+        isOpen={activeModal === 'profile'} 
+        onClose={closeModal} 
+        title="My Profile"
+        className="max-w-2xl"
+      >
+        <Profile />
       </Modal>
 
       <Modal 
