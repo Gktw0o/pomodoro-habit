@@ -1,0 +1,77 @@
+import Database from "@tauri-apps/plugin-sql";
+
+const DB_NAME = "pomodoro_habit.db";
+
+export const initDB = async () => {
+  try {
+    const db = await Database.load(`sqlite:${DB_NAME}`);
+
+    // Create Tables
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT
+      );
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS todos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        completed BOOLEAN DEFAULT 0,
+        due_date TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS habits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        frequency TEXT DEFAULT 'daily',
+        color TEXT DEFAULT '#3b82f6',
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS habit_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        habit_id INTEGER,
+        date TEXT NOT NULL,
+        completed BOOLEAN DEFAULT 0,
+        FOREIGN KEY(habit_id) REFERENCES habits(id) ON DELETE CASCADE
+      );
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS pomodoro_sessions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        duration INTEGER NOT NULL,
+        completed_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        label TEXT
+      );
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS goals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        target_date TEXT,
+        progress INTEGER DEFAULT 0,
+        total INTEGER DEFAULT 100,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    console.log("Database initialized successfully");
+    return db;
+  } catch (error) {
+    console.error("Failed to initialize database:", error);
+    throw error;
+  }
+};
+
+export const getDB = async () => {
+  return await Database.load(`sqlite:${DB_NAME}`);
+};
