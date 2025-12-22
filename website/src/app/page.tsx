@@ -1,6 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Timer, CheckSquare, Calendar, ListTodo, Target, ArrowRight, Download, Github } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AppCarousel } from "@/components/AppCarousel";
 
 export default function Home() {
   const features = [
@@ -42,18 +44,19 @@ export default function Home() {
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-zinc-200">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-xl">
+            <Image src="/logo.svg" alt="Pomodoro Habit Logo" width={32} height={32} className="w-8 h-8" />
             <span className="bg-gradient-to-br from-zinc-900 to-zinc-600 bg-clip-text text-transparent">Pomodoro Habit</span>
           </div>
           <div className="flex items-center gap-4">
             <Link 
-              href="https://github.com/overt/pomodoro-habit" 
+              href="https://github.com/Gktw0o/pomodoro-habit" 
               target="_blank"
               className="p-2 hover:bg-zinc-100 rounded-full transition-colors"
             >
               <Github size={20} />
             </Link>
             <Link
-              href="https://github.com/overt/pomodoro-habit/releases/latest"
+              href="https://github.com/Gktw0o/pomodoro-habit/releases/latest"
               target="_blank"
               className="px-4 py-2 bg-zinc-900 text-white rounded-full text-sm font-medium hover:bg-zinc-800 transition-all"
             >
@@ -84,7 +87,7 @@ export default function Home() {
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-700 delay-200">
             <Link
-              href="https://github.com/overt/pomodoro-habit/releases/latest"
+              href="https://github.com/Gktw0o/pomodoro-habit/releases/latest"
               target="_blank"
               className="px-8 py-4 bg-zinc-900 text-white rounded-2xl font-semibold text-lg hover:scale-105 hover:bg-zinc-800 transition-all flex items-center gap-2 shadow-xl shadow-zinc-200"
             >
@@ -102,16 +105,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* App Preview (Placeholder for Screenshot) */}
+      {/* App Preview */}
       <section className="px-4 pb-32">
-        <div className="max-w-5xl mx-auto rounded-3xl bg-zinc-900 p-2 shadow-2xl shadow-zinc-200 ring-1 ring-zinc-900/10">
-          <div className="rounded-2xl bg-zinc-800 aspect-[16/10] overflow-hidden relative group">
-            <div className="absolute inset-0 flex items-center justify-center text-zinc-500 bg-zinc-950">
-               {/* Replace this with an actual screenshot later */}
-               <span className="text-lg font-medium">App Screenshot Placeholder</span>
-            </div>
-          </div>
-        </div>
+        <AppCarousel />
       </section>
 
       {/* Features Grid */}
@@ -148,10 +144,10 @@ export default function Home() {
             © {new Date().getFullYear()} Pomodoro Habit. Open Source (MIT).
           </div>
           <div className="flex gap-6">
-            <Link href="https://github.com/overt/pomodoro-habit" className="text-zinc-500 hover:text-zinc-900 transition-colors">
+            <Link href="https://github.com/Gktw0o/pomodoro-habit" className="text-zinc-500 hover:text-zinc-900 transition-colors">
               GitHub
             </Link>
-            <Link href="https://github.com/overt/pomodoro-habit/issues" className="text-zinc-500 hover:text-zinc-900 transition-colors">
+            <Link href="https://github.com/Gktw0o/pomodoro-habit/issues" className="text-zinc-500 hover:text-zinc-900 transition-colors">
               Issues
             </Link>
             <Link href="#" className="text-zinc-500 hover:text-zinc-900 transition-colors">
