@@ -146,11 +146,11 @@ export default function Home() {
             <Link href="https://github.com/Gktw0o/pomodoro-habit" className="text-zinc-500 hover:text-zinc-900 transition-colors">
               GitHub
             </Link>
-            <Link href="https://github.com/Gktw0o/pomodoro-habit/issues" className="text-zinc-500 hover:text-zinc-900 transition-colors">
+            <Link href="https://github.com/overt/pomodoro-habit/issues" className="text-zinc-500 hover:text-zinc-900 transition-colors">
               Issues
             </Link>
-            <Link href="#" className="text-zinc-500 hover:text-zinc-900 transition-colors">
-              Privacy
+            <Link href="/changelog" className="text-zinc-500 hover:text-zinc-900 transition-colors">
+              Changelog
             </Link>
           </div>
         </div>
