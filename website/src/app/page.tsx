@@ -44,7 +44,7 @@ export default function Home() {
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-zinc-200">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-xl">
-            <Image src="/logo.svg" alt="Pomodoro Habit Logo" width={32} height={32} className="w-8 h-8" />
+            <Image src="./logo.svg" alt="Pomodoro Habit Logo" width={32} height={32} className="w-8 h-8" />
             <span className="bg-gradient-to-br from-zinc-900 to-zinc-600 bg-clip-text text-transparent">Pomodoro Habit</span>
           </div>
           <div className="flex items-center gap-4">
