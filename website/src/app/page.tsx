@@ -66,7 +66,7 @@ export default function Home() {
             <Link
               href="https://github.com/PomoHub/PomoHub/releases/latest"
               target="_blank"
-              className="px-4 py-2 bg-zinc-900 text-white rounded-full text-sm font-medium hover:bg-zinc-800 transition-all"
+              className="px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-full text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all"
             >
               Download
             </Link>
@@ -159,7 +159,7 @@ export default function Home() {
             <Link href="https://github.com/PomoHub/PomoHub/issues" className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors">
               Issues
             </Link>
-            <Link href="/PomoHub/changelog" className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors">
+            <Link href="/changelog" className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors">
               Changelog
             </Link>
           </div>
