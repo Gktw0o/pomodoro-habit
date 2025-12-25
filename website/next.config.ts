@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: '/pomodoro-habit', // Assuming repo name is pomodoro-habit
+  basePath: '/PomoHub', // Assuming repo name is PomoHub
   reactCompiler: true,
 };
 

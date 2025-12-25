@@ -15,11 +15,11 @@ export default function Changelog() {
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl group">
             <ArrowLeft size={20} className="text-zinc-400 group-hover:text-zinc-900 transition-colors" />
-            <Image src="/logos/pomohub-logo-black.svg" alt="PomoHub" width={120} height={32} />
+            <Image src="/pomodoro-habit/logos/pomohub-logo-black.svg" alt="PomoHub" width={120} height={32} />
           </Link>
           <div className="flex items-center gap-4">
             <Link 
-              href="https://github.com/overt/pomodoro-habit" 
+              href="https://github.com/Gktw0o/pomodoro-habit" 
               target="_blank"
               className="p-2 hover:bg-zinc-100 rounded-full transition-colors"
             >

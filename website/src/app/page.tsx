@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Timer, CheckSquare, Calendar, ListTodo, Target, ArrowRight, Download, Github } from "lucide-react";
+import { Timer, CheckSquare, Calendar, ListTodo, Target, ArrowRight, Download, Github, Smartphone, Bell, Music } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AppCarousel } from "@/components/AppCarousel";
 
@@ -26,7 +26,7 @@ export default function Home() {
     },
     {
       title: "Task Management",
-      description: "Simple yet powerful todo list with due dates and priority sorting.",
+      description: "Simple yet powerful todo list with due dates, priority sorting, and daily reminders.",
       icon: ListTodo,
       color: "bg-orange-500",
     },
@@ -36,6 +36,12 @@ export default function Home() {
       icon: Target,
       color: "bg-purple-500",
     },
+    {
+      title: "Mobile Support",
+      description: "Take your productivity on the go with our new Android application.",
+      icon: Smartphone,
+      color: "bg-indigo-500",
+    },
   ];
 
   return (
@@ -44,18 +50,18 @@ export default function Home() {
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-zinc-200">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-xl">
-             <Image src="/logos/pomohub-logo-black.svg" alt="PomoHub" width={150} height={40} priority />
+             <Image src="/PomoHub/logos/pomohub-logo-black.svg" alt="PomoHub" width={150} height={40} priority />
           </div>
           <div className="flex items-center gap-4">
             <Link 
-              href="https://github.com/Gktw0o/pomodoro-habit" 
+              href="https://github.com/PomoHub/PomoHub" 
               target="_blank"
               className="p-2 hover:bg-zinc-100 rounded-full transition-colors"
             >
               <Github size={20} />
             </Link>
             <Link
-              href="https://github.com/Gktw0o/pomodoro-habit/releases/latest"
+              href="https://github.com/PomoHub/PomoHub/releases/latest"
               target="_blank"
               className="px-4 py-2 bg-zinc-900 text-white rounded-full text-sm font-medium hover:bg-zinc-800 transition-all"
             >
@@ -73,7 +79,7 @@ export default function Home() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            v0.1.2 Released
+            v0.1.3 Released
           </div>
           
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-linear-to-b from-zinc-900 to-zinc-600 bg-clip-text text-transparent animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -81,24 +87,25 @@ export default function Home() {
           </h1>
           
           <p className="text-xl text-zinc-600 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-12 duration-700 delay-100">
-            A beautiful, privacy-focused desktop app that combines Pomodoro timer, habit tracking, and goal setting into one seamless experience.
+            A beautiful, privacy-focused app that combines Pomodoro timer, habit tracking, and goal setting into one seamless experience. Now available on Windows & Android.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-700 delay-200">
             <Link
-              href="https://github.com/Gktw0o/pomodoro-habit/releases/latest"
+              href="https://github.com/PomoHub/PomoHub/releases/latest"
               target="_blank"
               className="px-8 py-4 bg-zinc-900 text-white rounded-2xl font-semibold text-lg hover:scale-105 hover:bg-zinc-800 transition-all flex items-center gap-2 shadow-xl shadow-zinc-200"
             >
               <Download size={20} />
               Download for Windows
             </Link>
-            <Link
-              href="#features"
+             <Link
+              href="https://github.com/PomoHub/PomoHub/releases/latest"
+              target="_blank"
               className="px-8 py-4 bg-white text-zinc-900 border border-zinc-200 rounded-2xl font-semibold text-lg hover:bg-zinc-50 transition-all flex items-center gap-2"
             >
-              Explore Features
-              <ArrowRight size={20} />
+              <Smartphone size={20} />
+              Get Android APK
             </Link>
           </div>
         </div>
@@ -140,16 +147,16 @@ export default function Home() {
       <footer className="py-12 bg-zinc-50 border-t border-zinc-200">
         <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-zinc-500 text-sm">
-            © {new Date().getFullYear()} Pomodoro Habit. Open Source (MIT).
+            © {new Date().getFullYear()} PomoHub. Open Source (MIT).
           </div>
           <div className="flex gap-6">
-            <Link href="https://github.com/Gktw0o/pomodoro-habit" className="text-zinc-500 hover:text-zinc-900 transition-colors">
+            <Link href="https://github.com/PomoHub/PomoHub" className="text-zinc-500 hover:text-zinc-900 transition-colors">
               GitHub
             </Link>
-            <Link href="https://github.com/Gktw0o/pomodoro-habit/issues" className="text-zinc-500 hover:text-zinc-900 transition-colors">
+            <Link href="https://github.com/PomoHub/PomoHub/issues" className="text-zinc-500 hover:text-zinc-900 transition-colors">
               Issues
             </Link>
-            <Link href="/changelog" className="text-zinc-500 hover:text-zinc-900 transition-colors">
+            <Link href="/PomoHub/changelog" className="text-zinc-500 hover:text-zinc-900 transition-colors">
               Changelog
             </Link>
           </div>
