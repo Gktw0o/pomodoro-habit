@@ -61,13 +61,6 @@ A modern, all-in-one productivity application built with **Tauri**, **React**, a
 - **New:** Added "Long Break Interval" setting to customize session count before long break.
 - **New:** Added sound notification (placeholder) on timer completion.
 
-### v0.1.3 (Current)
-- **New:** Daily Task Reminders (Notifications).
-- **Improvement:** Reliable Background Timer (Timestamp-based logic).
-- **Improvement:** Native Notifications for Desktop & Android.
-- **Improvement:** Custom Notification Sounds (File selection).
-- **Fix:** Android background execution issues.
-
 ### v0.1.2
 - **New:** User Onboarding & Profile System (Name, Birthday).
 - **New:** Birthday Celebration with confetti.
@@ -76,6 +69,13 @@ A modern, all-in-one productivity application built with **Tauri**, **React**, a
 - **New:** Achievements System with unlock notifications.
 - **New:** Customizable Notification Sounds (Presets).
 - **New:** Android Support (Tauri Mobile initialized).
+
+### v0.1.3 (Current)
+- **New:** Daily Task Reminders (Notifications).
+- **Improvement:** Reliable Background Timer (Timestamp-based logic).
+- **Improvement:** Native Notifications for Desktop & Android.
+- **Improvement:** Custom Notification Sounds (File selection).
+- **Fix:** Android background execution issues.
 
 ### v0.2.0 (Planned)
 - [ ] **Habit Streaks:** Detailed streak counters and statistics.
