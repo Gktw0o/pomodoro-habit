@@ -15,6 +15,11 @@ interface SpaceIslandProps {
   onLeave: () => void;
   onToggleMembers: () => void;
   onToggleSettings: () => void;
+  timerState?: {
+      timeLeft: number;
+      isActive: boolean;
+      toggleTimer: () => void;
+  };
 }
 
 export function SpaceIsland({ 
@@ -22,11 +27,14 @@ export function SpaceIsland({
   memberCount, 
   onLeave,
   onToggleMembers,
-  onToggleSettings
+  onToggleSettings,
+  timerState
 }: SpaceIslandProps) {
-  const { timeLeft, isActive, toggleTimer } = usePomodoro();
+  const localPomodoro = usePomodoro();
+  const { timeLeft, isActive, toggleTimer } = timerState || localPomodoro;
 
   const formatTime = (seconds: number) => {
+    if (typeof seconds !== 'number' || isNaN(seconds)) return "00:00";
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;

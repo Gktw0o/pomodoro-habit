@@ -7,9 +7,13 @@ interface PomodoroProps {
   initialSettings?: PomodoroSettings;
   onSettingsChange?: (settings: PomodoroSettings) => void;
   spaceId?: string;
+  externalState?: any;
 }
 
-export function Pomodoro({ initialSettings, onSettingsChange, spaceId }: PomodoroProps = {}) {
+export function Pomodoro({ initialSettings, onSettingsChange, spaceId, externalState }: PomodoroProps = {}) {
+  // If externalState is provided, we don't pass the config to internal hook to avoid conflict/double-init
+  const internalState = usePomodoro(externalState ? undefined : { initialSettings, onSettingsChange, spaceId });
+  
   const { 
     mode, 
     timeLeft, 
@@ -19,7 +23,7 @@ export function Pomodoro({ initialSettings, onSettingsChange, spaceId }: Pomodor
     resetTimer, 
     changeMode,
     updateSettings 
-  } = usePomodoro({ initialSettings, onSettingsChange, spaceId });
+  } = externalState || internalState;
 
   const [showSettings, setShowSettings] = useState(false);
 

@@ -181,7 +181,7 @@ export const usePomodoro = (props?: UsePomodoroProps) => {
       setTimeLeft(duration * 60);
       endTimeRef.current = null;
     }
-  }, [mode, settings, isActive]);
+  }, [mode, settings]);
 
   const saveSession = useCallback(async (duration: number) => {
     try {

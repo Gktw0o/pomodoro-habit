@@ -10,7 +10,7 @@ export function BrandLogo({ width = 150, height = 40, className = "" }: BrandLog
   return (
     <div className={`relative inline-block ${className}`} style={{ width, height }}>
       <Image 
-        src="/logos/pomohub-logo-white.svg" 
+        src="/public/logos/pomohub-logo-white.svg" 
         alt="PomoHub" 
         width={width}
         height={height}
@@ -19,7 +19,7 @@ export function BrandLogo({ width = 150, height = 40, className = "" }: BrandLog
         style={{ width: '100%', height: '100%' }}
       />
       <Image 
-        src="/logos/pomohub-logo-black.svg" 
+        src="/public/logos/pomohub-logo-black.svg" 
         alt="PomoHub" 
         width={width}
         height={height}

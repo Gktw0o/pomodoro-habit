@@ -15,7 +15,7 @@ import { SpaceMembersModal } from "@/components/features/spaces/SpaceMembersModa
 import { SpaceSettingsModal } from "@/components/features/spaces/SpaceSettingsModal";
 import { Pomodoro } from "@/components/features/Pomodoro";
 import { MessageSquare, Timer, StickyNote } from "lucide-react";
-import { PomodoroSettings } from "@/hooks/usePomodoro";
+import { PomodoroSettings, usePomodoro } from "@/hooks/usePomodoro";
 
 interface Message {
   id: string;
@@ -61,7 +61,6 @@ export function SpaceDetailView({ spaceId, onBack }: SpaceDetailViewProps) {
   const [space, setSpace] = useState<Space | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isMobileDevice = isMobile();
-  const [isLandscape, setIsLandscape] = useState(true);
 
   // Manage Nav Bar visibility
   useEffect(() => {
@@ -81,40 +80,46 @@ export function SpaceDetailView({ spaceId, onBack }: SpaceDetailViewProps) {
   const [showNotes, setShowNotes] = useState(true);
   const [notesContent, setNotesContent] = useState(""); // Simple local notes for now
 
-  // Mobile Landscape Check
+  const pomodoro = usePomodoro({
+    workDuration: 25,
+    shortBreakDuration: 5,
+    longBreakDuration: 15,
+    longBreakInterval: 4,
+    autoStartBreaks: false,
+    autoStartPomodoros: false,
+  });
+
+  // Sync Space Settings to Pomodoro Hook
   useEffect(() => {
-    if (!isMobileDevice) return;
-
-    const checkOrientation = () => {
-      // Simple check: width > height implies landscape-ish or at least wide enough
-      if (window.screen.orientation) {
-        setIsLandscape(window.screen.orientation.type.includes('landscape'));
-      } else {
-        setIsLandscape(window.innerWidth > window.innerHeight);
-      }
-    };
-
-    checkOrientation();
-    window.addEventListener('resize', checkOrientation);
-    window.addEventListener('orientationchange', checkOrientation);
-
-    return () => {
-      window.removeEventListener('resize', checkOrientation);
-      window.removeEventListener('orientationchange', checkOrientation);
-    };
-  }, [isMobileDevice]);
+    if (space) {
+        // Only update if values are valid numbers
+        const newSettings = {
+            workDuration: typeof space.pomodoro_work_duration === 'number' ? space.pomodoro_work_duration : 25,
+            shortBreakDuration: typeof space.pomodoro_short_break_duration === 'number' ? space.pomodoro_short_break_duration : 5,
+            longBreakDuration: typeof space.pomodoro_long_break_duration === 'number' ? space.pomodoro_long_break_duration : 15,
+            longBreakInterval: typeof space.pomodoro_rounds === 'number' ? space.pomodoro_rounds : 4,
+            autoStartBreaks: false,
+            autoStartPomodoros: false
+        };
+        pomodoro.updateSettings(newSettings);
+    }
+  }, [space?.pomodoro_work_duration, space?.pomodoro_short_break_duration, space?.pomodoro_long_break_duration, space?.pomodoro_rounds]);
 
   // Fetch Space Details
   useEffect(() => {
     const fetchSpace = async () => {
       try {
         const data = await api.get(`/spaces/${spaceId}`);
-        setSpace(data);
+        if (data) {
+            setSpace(data);
+        }
       } catch (error) {
         console.error("Failed to fetch space details:", error);
       }
     };
-    fetchSpace();
+    if (spaceId) {
+        fetchSpace();
+    }
   }, [spaceId]);
 
   // Fetch initial messages
@@ -214,6 +219,10 @@ export function SpaceDetailView({ spaceId, onBack }: SpaceDetailViewProps) {
             pomodoro_long_break_duration: newSettings.longBreakDuration,
             pomodoro_rounds: newSettings.longBreakInterval
         });
+        
+        // Update local hook immediately
+        pomodoro.updateSettings(newSettings);
+
         // Optimistic update
         setSpace(prev => prev ? ({
             ...prev,
@@ -227,35 +236,9 @@ export function SpaceDetailView({ spaceId, onBack }: SpaceDetailViewProps) {
     }
   };
 
-  // --- Mobile Landscape Enforcer ---
-  if (isMobileDevice && !isLandscape) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full bg-zinc-950 text-white p-8 text-center space-y-6">
-        <div className="relative w-32 h-32">
-           <div className="absolute inset-0 border-4 border-zinc-700 rounded-2xl animate-[spin_3s_linear_infinite]"></div>
-           <Smartphone className="absolute inset-0 m-auto text-zinc-500 animate-[pulse_2s_ease-in-out_infinite]" size={48} />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold mb-2">Please Rotate Your Device</h2>
-          <p className="text-zinc-400">
-            Social Spaces require a landscape view for the best experience.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // --- Mobile Layout (Landscape) ---
-  if (isMobileDevice) {
-    // Reuse Desktop Layout for Mobile Landscape but maybe scaled or adjusted
-    // Actually, user asked to "apply desktop spaces page to mobile". 
-    // So we will use the "Desktop Layout" code block below for both, 
-    // but maybe tweak styles if needed.
-  }
-
-  // --- Universal Layout (Desktop + Mobile Landscape) ---
+  // --- Universal Layout ---
   return (
-    <div className="relative h-full w-full bg-zinc-100 dark:bg-black/50 overflow-hidden">
+    <div className="relative h-full w-full bg-zinc-100 dark:bg-black/50 overflow-hidden flex flex-col">
         {/* Dynamic Island Bar */}
         <SpaceIsland 
             spaceName={space?.name || "Loading..."} 
@@ -263,10 +246,83 @@ export function SpaceDetailView({ spaceId, onBack }: SpaceDetailViewProps) {
             onLeave={onBack}
             onToggleMembers={() => setIsMembersModalOpen(true)}
             onToggleSettings={() => setIsSettingsModalOpen(true)}
+            timerState={{
+                timeLeft: pomodoro.timeLeft,
+                isActive: pomodoro.isActive,
+                toggleTimer: pomodoro.toggleTimer
+            }}
         />
 
         {/* Widgets Container */}
-        <div className="absolute inset-0 p-8">
+        {isMobileDevice ? (
+          // Mobile: Vertical Stack
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-24 safe-area-pt pt-20">
+              {/* Timer First on Mobile */}
+              {space && (
+                 <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 p-4">
+                     <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-3 flex items-center gap-2">
+                        <Timer size={18} /> Focus Timer
+                     </h3>
+                     <Pomodoro 
+                          spaceId={spaceId}
+                          externalState={pomodoro}
+                          onSettingsChange={handlePomodoroSettingsChange}
+                      />
+                 </div>
+              )}
+
+              {/* Chat Second */}
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 h-96 flex flex-col">
+                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 p-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center gap-2">
+                      <MessageSquare size={18} /> Chat
+                  </h3>
+                  <div className="flex-1 overflow-y-auto p-3 space-y-3">
+                      {messages.map((msg, index) => (
+                          <div key={index} className={cn("text-sm", msg.sender_id === user?.id ? "text-right" : "text-left")}>
+                              <span className="font-bold text-xs text-zinc-500">{msg.sender.username}</span>
+                              <div className={cn(
+                                  "mt-1 px-3 py-2 rounded-xl inline-block max-w-[85%]",
+                                  msg.sender_id === user?.id 
+                                      ? "bg-indigo-600 text-white" 
+                                      : "bg-zinc-100 dark:bg-zinc-800"
+                              )}>
+                                  {msg.content}
+                              </div>
+                          </div>
+                      ))}
+                      <div ref={messagesEndRef} />
+                  </div>
+                  <div className="p-2 border-t border-zinc-200 dark:border-zinc-800">
+                      <form onSubmit={handleSendMessage} className="flex gap-2">
+                          <input 
+                              className="flex-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none"
+                              placeholder="Message..."
+                              value={newMessage}
+                              onChange={(e) => setNewMessage(e.target.value)}
+                          />
+                          <button type="submit" className="p-2 bg-indigo-600 text-white rounded-lg">
+                              <Send size={14} />
+                          </button>
+                      </form>
+                  </div>
+              </div>
+
+              {/* Notes Last */}
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 h-48 flex flex-col">
+                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 p-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center gap-2">
+                      <StickyNote size={18} /> Notes
+                  </h3>
+                  <textarea 
+                      className="w-full h-full p-4 bg-transparent resize-none focus:outline-none text-zinc-700 dark:text-zinc-300 text-sm"
+                      placeholder="Shared notes..."
+                      value={notesContent}
+                      onChange={(e) => setNotesContent(e.target.value)}
+                  />
+              </div>
+          </div>
+        ) : (
+          // Desktop: Draggable Widgets
+          <div className="absolute inset-0 p-8">
             {/* Chat Widget */}
             {showChat && (
                 <DraggableWidget 
@@ -274,7 +330,7 @@ export function SpaceDetailView({ spaceId, onBack }: SpaceDetailViewProps) {
                     icon={MessageSquare} 
                     initialPosition={{ x: 50, y: 100 }}
                     onClose={() => setShowChat(false)}
-                    className={cn(isMobileDevice ? "w-60 h-64" : "w-80 h-96")}
+                    className="w-80 h-96"
                 >
                     <div className="flex-1 flex flex-col h-full overflow-hidden">
                         <div className="flex-1 overflow-y-auto p-3 space-y-3">
@@ -315,21 +371,14 @@ export function SpaceDetailView({ spaceId, onBack }: SpaceDetailViewProps) {
                 <DraggableWidget
                     title="Focus Timer"
                     icon={Timer}
-                    initialPosition={{ x: isMobileDevice ? 320 : 400, y: 100 }}
+                    initialPosition={{ x: 400, y: 100 }}
                     onClose={() => setShowTimer(false)}
-                    className={cn(isMobileDevice ? "w-64 h-auto" : "w-96 h-auto")}
+                    className="w-96 h-auto"
                 >
                     <div className="p-4">
                         <Pomodoro 
                             spaceId={spaceId}
-                            initialSettings={{
-                                workDuration: space.pomodoro_work_duration || 25,
-                                shortBreakDuration: space.pomodoro_short_break_duration || 5,
-                                longBreakDuration: space.pomodoro_long_break_duration || 15,
-                                longBreakInterval: space.pomodoro_rounds || 4,
-                                autoStartBreaks: false,
-                                autoStartPomodoros: false
-                            }}
+                            externalState={pomodoro}
                             onSettingsChange={handlePomodoroSettingsChange}
                         />
                     </div>
@@ -341,9 +390,9 @@ export function SpaceDetailView({ spaceId, onBack }: SpaceDetailViewProps) {
                 <DraggableWidget
                     title="Space Notes"
                     icon={StickyNote}
-                    initialPosition={{ x: isMobileDevice ? 50 : 750, y: 100 }}
+                    initialPosition={{ x: 750, y: 100 }}
                     onClose={() => setShowNotes(false)}
-                    className={cn(isMobileDevice ? "w-60 h-48" : "w-80 h-80")}
+                    className="w-80 h-80"
                 >
                     <textarea 
                         className="w-full h-full p-4 bg-transparent resize-none focus:outline-none text-zinc-700 dark:text-zinc-300 text-sm"
@@ -353,31 +402,29 @@ export function SpaceDetailView({ spaceId, onBack }: SpaceDetailViewProps) {
                     />
                 </DraggableWidget>
             )}
-        </div>
+          </div>
+        )}
 
-        {/* Floating Toggle Buttons (if widgets closed) */}
-        <div className={cn(
-            "absolute flex gap-2 z-40",
-            isMobileDevice 
-                ? "left-4 top-1/2 -translate-y-1/2 flex-col" 
-                : "bottom-6 left-1/2 -translate-x-1/2"
-        )}>
-            {!showChat && (
-                <button onClick={() => setShowChat(true)} className="p-3 bg-white dark:bg-zinc-800 rounded-full shadow-lg border border-zinc-200 dark:border-zinc-700">
-                    <MessageSquare size={20} />
-                </button>
-            )}
-            {!showTimer && (
-                <button onClick={() => setShowTimer(true)} className="p-3 bg-white dark:bg-zinc-800 rounded-full shadow-lg border border-zinc-200 dark:border-zinc-700">
-                    <Timer size={20} />
-                </button>
-            )}
-            {!showNotes && (
-                <button onClick={() => setShowNotes(true)} className="p-3 bg-white dark:bg-zinc-800 rounded-full shadow-lg border border-zinc-200 dark:border-zinc-700">
-                    <StickyNote size={20} />
-                </button>
-            )}
-        </div>
+        {/* Floating Toggle Buttons (if widgets closed - Desktop Only) */}
+        {!isMobileDevice && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-40">
+              {!showChat && (
+                  <button onClick={() => setShowChat(true)} className="p-3 bg-white dark:bg-zinc-800 rounded-full shadow-lg border border-zinc-200 dark:border-zinc-700">
+                      <MessageSquare size={20} />
+                  </button>
+              )}
+              {!showTimer && (
+                  <button onClick={() => setShowTimer(true)} className="p-3 bg-white dark:bg-zinc-800 rounded-full shadow-lg border border-zinc-200 dark:border-zinc-700">
+                      <Timer size={20} />
+                  </button>
+              )}
+              {!showNotes && (
+                  <button onClick={() => setShowNotes(true)} className="p-3 bg-white dark:bg-zinc-800 rounded-full shadow-lg border border-zinc-200 dark:border-zinc-700">
+                      <StickyNote size={20} />
+                  </button>
+              )}
+          </div>
+        )}
 
         {/* Modals */}
         <SpaceMembersModal 
@@ -396,6 +443,13 @@ export function SpaceDetailView({ spaceId, onBack }: SpaceDetailViewProps) {
             isOwner={space?.owner_id === user?.id}
             onDeleteSpace={handleDeleteSpace}
             onLeaveSpace={handleLeaveSpace}
+            pomodoroSettings={{
+                workDuration: space?.pomodoro_work_duration || 25,
+                shortBreakDuration: space?.pomodoro_short_break_duration || 5,
+                longBreakDuration: space?.pomodoro_long_break_duration || 15,
+                longBreakInterval: space?.pomodoro_rounds || 4
+            }}
+            onUpdatePomodoroSettings={handlePomodoroSettingsChange}
         />
     </div>
   );

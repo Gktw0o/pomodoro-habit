@@ -61,6 +61,67 @@ export function SpaceSettingsModal({
                   </div>
                 </div>
 
+                {/* Pomodoro Settings (Owner Only) */}
+                {isOwner && onUpdatePomodoroSettings && (
+                  <div className="space-y-4 pt-4 border-t border-zinc-800/50">
+                    <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-2">
+                      <Timer size={12} />
+                      Timer Settings
+                    </h3>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-xs text-zinc-500">Work Duration (m)</label>
+                        <input 
+                          type="number" 
+                          min="1" max="60"
+                          value={settings.workDuration}
+                          onChange={(e) => setSettings({...settings, workDuration: parseInt(e.target.value) || 25})}
+                          className="w-full p-2 bg-zinc-800 rounded-lg border border-zinc-700 text-white text-sm focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs text-zinc-500">Short Break (m)</label>
+                        <input 
+                          type="number" 
+                          min="1" max="30"
+                          value={settings.shortBreakDuration}
+                          onChange={(e) => setSettings({...settings, shortBreakDuration: parseInt(e.target.value) || 5})}
+                          className="w-full p-2 bg-zinc-800 rounded-lg border border-zinc-700 text-white text-sm focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs text-zinc-500">Long Break (m)</label>
+                        <input 
+                          type="number" 
+                          min="1" max="60"
+                          value={settings.longBreakDuration}
+                          onChange={(e) => setSettings({...settings, longBreakDuration: parseInt(e.target.value) || 15})}
+                          className="w-full p-2 bg-zinc-800 rounded-lg border border-zinc-700 text-white text-sm focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs text-zinc-500">Rounds</label>
+                        <input 
+                          type="number" 
+                          min="1" max="10"
+                          value={settings.longBreakInterval}
+                          onChange={(e) => setSettings({...settings, longBreakInterval: parseInt(e.target.value) || 4})}
+                          className="w-full p-2 bg-zinc-800 rounded-lg border border-zinc-700 text-white text-sm focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleSaveSettings}
+                      className="w-full flex items-center justify-center gap-2 p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors text-sm font-medium"
+                    >
+                      <Save size={16} />
+                      Save Timer Settings
+                    </button>
+                  </div>
+                )}
+
                 {/* Danger Zone */}
                 <div className="space-y-3 pt-4 border-t border-zinc-800/50">
                   <h3 className="text-xs font-bold text-red-500 uppercase tracking-wider flex items-center gap-2">

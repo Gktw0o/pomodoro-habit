@@ -19,6 +19,7 @@ const NAV_ITEMS: { id: ViewType; icon: any; label: string }[] = [
   { id: 'dashboard', icon: LayoutDashboard, label: 'Home' },
   { id: 'pomodoro', icon: Timer, label: 'Focus' },
   { id: 'spaces', icon: Users, label: 'Spaces' },
+  { id: 'calendar', icon: Calendar, label: 'Calendar' },
   { id: 'social', icon: MessageSquare, label: 'Social' },
   { id: 'profile', icon: User, label: 'Profile' },
 ];
