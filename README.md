@@ -1,172 +1,180 @@
 <div align="center">
+  <img src="website/public/logos/pomohub-app-logo.svg" alt="PomoHub Logo" width="120" height="120" />
 
-<img align="center" alt="GitHub License" src="https://img.shields.io/github/license/PomoHub/PomoHub">
-<img align="center" alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/PomoHub/PomoHub">
-<img align="center" alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/PomoHub/PomoHub/total">
-<img align="center" alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/PomoHub">
+  # PomoHub 🍅
+  
+  **The Ultimate Social Productivity & Focus Application**
+  
+  [![License](https://img.shields.io/github/license/PomoHub/PomoHub?style=for-the-badge&color=blue)](LICENSE)
+  [![Version](https://img.shields.io/github/v/release/PomoHub/PomoHub?style=for-the-badge&color=orange)](https://github.com/PomoHub/PomoHub/releases)
+  [![Downloads](https://img.shields.io/github/downloads/PomoHub/PomoHub/total?style=for-the-badge&color=green)](https://github.com/PomoHub/PomoHub/releases)
+  [![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/PomoHub/PomoHub/releases)
+  [![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/PomoHub/PomoHub/releases)
 
+  <br/>
+
+  <p align="center">
+    <b>Focus Together, Grow Together.</b><br/>
+    Combine the power of the Pomodoro technique with social spaces, habit tracking, goal setting, and task management in a beautiful, customizable interface.
+    <br/>
+    <br/>
+    <a href="https://github.com/PomoHub/PomoHub/releases/latest"><strong>Download for Windows & Android »</strong></a>
+    <br/>
+    <br/>
+    <a href="#-features">Features</a> •
+    <a href="#-screenshots">Screenshots</a> •
+    <a href="#-tech-stack">Tech Stack</a> •
+    <a href="#-getting-started">Getting Started</a>
+  </p>
 </div>
 
-# PomoHub 🍅
+---
 
-A modern, all-in-one productivity application built with **Tauri**, **React**, and **TypeScript**. Combine the power of the Pomodoro technique with habit tracking, goal setting, and task management in a beautiful, customizable interface.
+## 📸 Screenshots
+
+<div align="center">
+  <img src="website/public/main-page.jpg" width="800" alt="Dashboard" />
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="website/public/pomodoro-page.jpg" width="32%" alt="Pomodoro Timer" />
+  <img src="website/public/habits-page.jpg" width="32%" alt="Habit Tracker" />
+  <img src="website/public/goals-page.jpg" width="32%" alt="Goals" />
+</div>
+
+---
 
 ## ✨ Features
 
-### 🍅 Pomodoro Timer
-- **Customizable Modes:** Switch between Work, Short Break, and Long Break.
-- **Visual Progress:** Elegant circular progress indicator.
-- **Session Logging:** Automatically logs work sessions to track your focus time.
-- **Configurable Settings:** Adjust durations for work and breaks to suit your workflow.
+### 🍅 **Smart Pomodoro Timer**
+- **Customizable Modes:** Work, Short Break, Long Break.
+- **Visual Progress:** Elegant circular indicators and progress bars.
+- **Session Logging:** Automatic tracking of focus time.
+- **Window Title Timer:** See your countdown even when the app is minimized.
 
-### ✅ Habit Tracker
-- **Daily Tracking:** Easily mark habits as completed for the day.
-- **Color Coding:** Assign custom colors to different habits for better visualization.
-- **Streak Logic:** Visual cues for completed habits (strikethrough and color fill).
-- **Persistent Data:** All habits and logs are stored locally.
+### 👥 **Social Spaces (New in v0.2.0)**
+- **Create Spaces:** Private rooms to invite friends and focus together.
+- **Real-time Chat:** Communicate with your team or friends.
+- **Live Status:** See who is focusing and who is on break.
+- **Cross-Platform:** Syncs seamlessly between Desktop and Android.
 
-### 📅 Calendar
-- **Monthly Overview:** View your activity across the entire month.
-- **Daily Insights:** Click on any day to see detailed stats:
-  - Habits completed
-  - Total focus time (Pomodoro minutes)
-  - Tasks finished
-- **Visual Indicators:** Color-coded dots on calendar days show activity types.
+### ✅ **Habit Tracker**
+- **Daily Tracking:** Build consistency with daily check-ins.
+- **Streak Logic:** Visual cues (fire icons, color coding) to keep you motivated.
+- **Customization:** Assign colors and emojis to your habits.
 
-### 📝 Todo List
-- **Task Management:** Create, read, update, and delete tasks.
-- **Due Dates:** Assign due dates to keep track of deadlines.
-- **Smart Sorting:** Uncompleted tasks always appear at the top.
+### 📝 **Task Management**
+- **Todo List:** Organize tasks with due dates and priority.
+- **Smart Sorting:** Auto-prioritizes uncompleted tasks.
+- **Note Taking:** Rich text notes with drawing support and attachments.
+- **Smart Macros:** Create tasks directly from your notes (e.g., `@create-todo`).
 
-### 🎯 Goals
-- **Long-term Tracking:** Set numeric goals (e.g., "Read 10 Books").
-- **Progress Bars:** Visual progress tracking with percentage indicators.
-- **Target Dates:** Set deadlines for your goals.
+### 🎯 **Gamification & Goals**
+- **Long-term Goals:** Set numeric targets (e.g., "Read 10 Books").
+- **Achievements:** Unlock badges as you progress.
+- **Profile Stats:** Detailed statistics on your productivity journey.
+- **Seasonal Effects:** Enjoy special themes like Winter Snowfall.
 
-### ⚙️ Customization
-- **Theme Support:** Switch between **Light**, **Dark**, or **System** themes.
-- **Custom Backgrounds:** Choose any image from your computer as the application background.
-- **Privacy First:** All data is stored locally on your device using SQLite.
+### ⚙️ **Customization & Privacy**
+- **Themes:** Light, Dark, and System modes.
+- **Backgrounds:** Set custom wallpapers for your dashboard.
+- **Local First:** Your data belongs to you. Sync is optional.
+
+---
+
+## 🛠 Tech Stack
+
+**Core**
+<br/>
+![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
+![Tauri](https://img.shields.io/badge/tauri-%2324C8DB.svg?style=for-the-badge&logo=tauri&logoColor=white)
+
+**Frontend**
+<br/>
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+
+**Data & State**
+<br/>
+![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
+![Zustand](https://img.shields.io/badge/Zustand-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js** & **Bun**
+- **Rust** (latest stable)
+- **Visual Studio Build Tools** (Windows only, "C++ Desktop Development")
+- **Android Studio** (for Android build)
+
+### Installation
+
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/PomoHub/PomoHub.git
+    cd PomoHub
+    ```
+
+2.  **Install dependencies**
+    ```bash
+    bun install
+    ```
+
+3.  **Run in Development Mode**
+    ```bash
+    # Desktop
+    bun run tauri dev
+
+    # Android (with emulator/device connected)
+    bun run tauri android dev
+    ```
+
+4.  **Build for Production**
+    ```bash
+    # Desktop
+    bun run tauri build
+
+    # Android APK
+    bun run tauri android build
+    ```
 
 ---
 
 ## 🗺️ Roadmap
 
-### v0.1.0 (Current)
-- [x] Basic Application Infrastructure (Tauri + React)
-- [x] SQLite Database Integration
-- [x] Pomodoro Timer Feature
-- [x] Habit Tracker Feature
-- [x] Calendar & Stats Feature
-- [x] Todo List Feature
-- [x] Goals Feature
-- [x] Settings (Theme & Background)
+### v0.1.x - Foundation (Completed)
+- [x] Core Pomodoro Timer
+- [x] Habit Tracker & Todo List
+- [x] Calendar & Statistics
+- [x] Note Taking System
+- [x] Android Support
 
-### v0.1.1 (Bug Fixes & Improvements)
-- **Fix:** Resolved database connection issues preventing creation of Habits, Todos, and Goals.
-- **Fix:** Fixed theme switching not applying correctly.
-- **Fix:** Corrected Calendar stats aggregation.
-- **New:** Added configurable auto-transition between Pomodoro modes.
-- **New:** Added "Long Break Interval" setting to customize session count before long break.
-- **New:** Added sound notification (placeholder) on timer completion.
+### v0.2.0 - The Social Update (Current)
+- [x] **Social Spaces:** Private rooms for group focus.
+- [x] **Real-time Chat:** WebSocket-based messaging.
+- [x] **Cloud Sync:** Sync data across devices.
+- [x] **Mobile Optimization:** Full responsive design.
 
-### v0.1.2
-- **New:** User Onboarding & Profile System (Name, Birthday).
-- **New:** Birthday Celebration with confetti.
-- **New:** Seasonal Winter Snowfall effect (Dec-Feb).
-- **New:** Profile Page with comprehensive statistics (Total Time, Streaks).
-- **New:** Achievements System with unlock notifications.
-- **New:** Customizable Notification Sounds (Presets).
-- **New:** Android Support (Tauri Mobile initialized).
-
-### v0.1.3
-- **New:** Daily Task Reminders (Notifications).
-- **Improvement:** Reliable Background Timer (Timestamp-based logic).
-- **Improvement:** Native Notifications for Desktop & Android.
-- **Improvement:** Custom Notification Sounds (File selection).
-- **Fix:** Android background execution issues.
-
-### v0.1.4 (Current)
-- **New:** Desktop Window Title Timer (Visible countdown in title bar).
-- **New:** Note Taking System (Text, Drawings, Attachments).
-- **New:** Smart Macros (Create Todos/Tasks directly from notes with `@create-todo` syntax).
-- **Improvement:** Persistent Mobile Notifications (Lock screen timer updates).
-- **Improvement:** Notification Sound Reliability (Fallback beep mechanism).
-- **Fix:** Desktop Notification Spam (Optimized notification frequency).
-
-### v0.2.0 (Planned)
-- [x] **Social Spaces:** Create private rooms, invite friends via code, and focus together.
-- [x] **Real-time Chat:** Chat with friends in your space.
-- [x] **Friend System:** Add friends, block users, and see what they are up to.
-- [x] **Cloud Sync:** Sync data across Desktop and Mobile (Android).
-- [x] **Mobile Support:** Fully responsive mobile layout (Spaces requires landscape).
-- [ ] **Habit Streaks:** Detailed streak counters and statistics.
-- [ ] **Data Export/Import:** Backup your data to JSON/CSV.
-- [ ] **Keyboard Shortcuts:** Global hotkeys for timer control.
-
-### v1.0.0 (Future)
-- [ ] **Cloud Sync:** Optional synchronization across devices.
-- [ ] **Advanced Analytics:** Charts and graphs for long-term productivity trends.
-- [ ] **Gamification:** Badges and achievements for reaching goals.
-
-## 📱 Mobile Support (Android)
-
-PomoHub is available for Android!
-- **Requirements:** Android SDK, Java 17+, Rust, Tauri CLI.
-- **Build:** `bun tauri android build`
-- **Run:** `bun tauri android dev`
-
----
-
-## 🛠️ Tech Stack
-
-- **Core:** [Tauri v2](https://tauri.app/) (Rust)
-- **Frontend:** [React](https://reactjs.org/) + [TypeScript](https://www.typescriptlang.org/)
-- **Build Tool:** [Vite](https://vitejs.dev/)
-- **Styling:** [TailwindCSS v4](https://tailwindcss.com/)
-- **State Management:** [Zustand](https://github.com/pmndrs/zustand)
-- **Database:** [SQLite](https://www.sqlite.org/) (via `tauri-plugin-sql`)
-- **Icons:** [Lucide React](https://lucide.dev/)
-
----
-
-## 🚀 Building from Source
-
-1.  **Prerequisites:**
-    - Install [Node.js](https://nodejs.org/) and [Bun](https://bun.sh/).
-    - Install [Rust](https://www.rust-lang.org/tools/install).
-    - Install **Visual Studio Build Tools** with "C++ Desktop Development" (Windows only).
-
-2.  **Install Dependencies:**
-    ```bash
-    bun install
-    ```
-
-3.  **Run in Development Mode:**
-    ```bash
-    bun run tauri dev
-    ```
-
-4.  **Build for Production (Desktop):**
-    ```bash
-    bun run tauri build
-    ```
-
-5.  **Build for Android:**
-    - Ensure Android Studio and SDK are installed.
-    - Connect an Android device or start an emulator.
-    - Run:
-      ```bash
-      bun run tauri android dev
-      ```
-    - For release APK:
-      ```bash
-      bun run tauri android build
-      ```
-    The executable will be located in `src-tauri/target/release/bundle/nsis/`.
+### v1.0.0 - The Future (Planned)
+- [ ] **Public Spaces:** Join community focus rooms.
+- [ ] **Advanced Analytics:** Heatmaps and trend analysis.
+- [ ] **Plugin System:** Community-created extensions.
+- [ ] **Web Version:** Access PomoHub directly from the browser.
 
 ---
 
 ## 📄 License
 
-MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
+
+<div align="center">
+  <br/>
+  <p>Made with ❤️ by the PomoHub Team</p>
+</div>
