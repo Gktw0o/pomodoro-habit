@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNotes, Note } from '@/hooks/useNotes';
 import { useTodos } from '@/hooks/useTodos';
-import { Plus, Trash2, Save, FileText, Image as ImageIcon, Paperclip, PenTool, X, Play } from 'lucide-react';
+import { Plus, Trash2, Save, FileText, Paperclip, PenTool, X, Eraser, MousePointer, Eye } from 'lucide-react';
 import { ReactSketchCanvas, ReactSketchCanvasRef } from 'react-sketch-canvas';
 import { cn } from '@/lib/utils';
 import { open } from '@tauri-apps/plugin-dialog';
+import { convertFileSrc } from '@tauri-apps/api/core';
 
 export function Notes() {
   const { notes, loading, addNote, updateNote, deleteNote } = useNotes();
@@ -14,6 +15,13 @@ export function Notes() {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState<'text' | 'drawing'>('text');
   
+  // Drawing Tools State
+  const [drawingMode, setDrawingMode] = useState<boolean>(true); // true = pen, false = eraser
+  const [isPanMode, setIsPanMode] = useState(false);
+
+  // File Preview Modal State
+  const [previewFile, setPreviewFile] = useState<string | null>(null);
+
   // Form State
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -38,6 +46,13 @@ export function Notes() {
     }
   }, [activeTab, drawing]);
 
+  useEffect(() => {
+    // Sync modes with canvas
+    if (canvasRef.current) {
+        canvasRef.current.eraseMode(!drawingMode);
+    }
+  }, [drawingMode]);
+
   const resetForm = () => {
     setTitle('');
     setContent('');
@@ -46,6 +61,8 @@ export function Notes() {
     setSelectedNote(null);
     setIsEditing(false);
     setActiveTab('text');
+    setDrawingMode(true);
+    setIsPanMode(false);
   };
 
   const handleEdit = (note: Note) => {
@@ -98,9 +115,9 @@ export function Notes() {
     }
 
     if (selectedNote) {
-      await updateNote(selectedNote.id, title, processedContent, currentDrawing, attachments);
+      await updateNote(selectedNote.id, title, processedContent, currentDrawing || undefined, attachments);
     } else {
-      await addNote(title, processedContent, currentDrawing, attachments);
+      await addNote(title, processedContent, currentDrawing || undefined, attachments);
     }
     
     resetForm();
@@ -254,25 +271,58 @@ export function Notes() {
                   className="w-full h-full p-4 resize-none bg-transparent border-none focus:outline-none text-zinc-800 dark:text-zinc-200 leading-relaxed"
                 />
               ) : (
-                <div className="w-full h-full bg-white relative">
-                   <ReactSketchCanvas
-                        ref={canvasRef}
-                        strokeWidth={4}
-                        strokeColor="black"
-                        canvasColor="transparent"
-                        className="w-full h-full"
-                    />
-                    {/* Load drawing if exists and not yet loaded into canvas? 
-                        ReactSketchCanvas loads paths via props or methods. 
-                        For simplicity, we only save drawing when saving note. 
-                        Loading existing drawing requires `loadPaths`.
-                    */}
+                <div className="w-full h-full bg-white relative overflow-hidden">
+                   {/* Drawing Toolbar */}
+                   <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 bg-white border border-zinc-200 shadow-sm rounded-lg p-1">
+                      <button
+                        onClick={() => { setDrawingMode(true); setIsPanMode(false); }}
+                        className={cn("p-2 rounded-md transition-colors", drawingMode && !isPanMode ? "bg-indigo-100 text-indigo-600" : "text-zinc-500 hover:bg-zinc-100")}
+                        title="Pen"
+                      >
+                        <PenTool size={18} />
+                      </button>
+                      <button
+                        onClick={() => { setDrawingMode(false); setIsPanMode(false); }}
+                        className={cn("p-2 rounded-md transition-colors", !drawingMode && !isPanMode ? "bg-indigo-100 text-indigo-600" : "text-zinc-500 hover:bg-zinc-100")}
+                        title="Eraser"
+                      >
+                        <Eraser size={18} />
+                      </button>
+                      <div className="w-px h-6 bg-zinc-200 mx-1"></div>
+                       <button
+                        onClick={() => { setIsPanMode(true); }}
+                        className={cn("p-2 rounded-md transition-colors", isPanMode ? "bg-indigo-100 text-indigo-600" : "text-zinc-500 hover:bg-zinc-100")}
+                        title="Pan / Scroll"
+                      >
+                        <MousePointer size={18} />
+                      </button>
+                   </div>
+
+                   {/* Canvas Wrapper for Infinite Scroll Effect (Simple Overflow) */}
+                   <div className={cn("w-full h-full overflow-auto", isPanMode ? "cursor-grab active:cursor-grabbing" : "cursor-crosshair")}>
+                     {/* Large Canvas Area */}
+                     <div className="w-[2000px] h-[2000px] bg-white relative">
+                        {/* Pointer Events Control: Disable canvas interactions when in Pan Mode */}
+                        <div className={cn("w-full h-full", isPanMode ? "pointer-events-none" : "")}>
+                            <ReactSketchCanvas
+                                    ref={canvasRef}
+                                    strokeWidth={4}
+                                    strokeColor="black"
+                                    canvasColor="transparent"
+                                    className="w-full h-full"
+                                    width="2000px"
+                                    height="2000px"
+                                />
+                        </div>
+                     </div>
+                   </div>
+
                     {drawing && (
                         <button 
                             onClick={() => canvasRef.current?.loadPaths(JSON.parse(drawing))}
                             className="absolute bottom-4 right-4 z-10 px-3 py-1 bg-zinc-100 text-xs rounded border shadow-sm"
                         >
-                            Load Existing Drawing
+                            Reload Drawing
                         </button>
                     )}
                 </div>
@@ -286,6 +336,15 @@ export function Notes() {
                   <div key={idx} className="flex items-center gap-1 px-2 py-1 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-xs max-w-[200px]">
                     <Paperclip size={12} className="shrink-0" />
                     <span className="truncate flex-1">{path.split(/[/\\]/).pop()}</span>
+                    
+                    <button 
+                        onClick={() => setPreviewFile(path)}
+                        className="hover:text-indigo-500 mx-1"
+                        title="Preview"
+                    >
+                        <Eye size={12} />
+                    </button>
+
                     <button onClick={() => removeAttachment(idx)} className="hover:text-red-500">
                         <X size={12} />
                     </button>
@@ -308,6 +367,37 @@ export function Notes() {
           </div>
         )}
       </div>
+
+      {/* File Preview Modal */}
+      {previewFile && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-8">
+             <div className="relative w-full h-full max-w-5xl bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden flex flex-col">
+                <div className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800">
+                    <h3 className="font-medium truncate">{previewFile.split(/[/\\]/).pop()}</h3>
+                    <button 
+                        onClick={() => setPreviewFile(null)}
+                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full"
+                    >
+                        <X size={20} />
+                    </button>
+                </div>
+                <div className="flex-1 overflow-auto bg-zinc-100 dark:bg-zinc-950 p-4 flex items-center justify-center">
+                    {previewFile.toLowerCase().endsWith('.pdf') ? (
+                        <iframe 
+                            src={convertFileSrc(previewFile)} 
+                            className="w-full h-full rounded-lg shadow-sm"
+                        />
+                    ) : (
+                        <img 
+                            src={convertFileSrc(previewFile)} 
+                            alt="Preview" 
+                            className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+                        />
+                    )}
+                </div>
+             </div>
+        </div>
+      )}
     </div>
   );
 }

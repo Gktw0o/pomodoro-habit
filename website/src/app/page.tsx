@@ -1,6 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
-import { Timer, CheckSquare, Calendar, ListTodo, Target, ArrowRight, Download, Github, Smartphone, Bell, Music } from "lucide-react";
+import { Timer, CheckSquare, Calendar, ListTodo, Target, Download, Github, Smartphone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AppCarousel } from "@/components/AppCarousel";
 import { ThemeToggle } from "@/components/ThemeToggle";
