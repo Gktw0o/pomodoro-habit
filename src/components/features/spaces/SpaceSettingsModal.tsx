@@ -1,6 +1,6 @@
 import { X, Trash2, LogOut, AlertTriangle, Timer, Save } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useConfirm } from "@/components/providers/ConfirmProvider";
 import { PomodoroSettings } from "@/hooks/usePomodoro";
 
@@ -34,6 +34,12 @@ export function SpaceSettingsModal({
     autoStartBreaks: false,
     autoStartPomodoros: false
   });
+
+  useEffect(() => {
+    if (pomodoroSettings) {
+        setSettings(pomodoroSettings);
+    }
+  }, [pomodoroSettings]);
 
   const handleSaveSettings = () => {
     if (onUpdatePomodoroSettings) {
