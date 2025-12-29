@@ -1,7 +1,6 @@
 <div align="center">
-  <img src="website/public/logos/pomohub-app-logo.svg" alt="PomoHub Logo" width="120" height="120" />
 
-  # PomoHub 🍅
+# <img src="website/public/logos/pomohub-app-logo.svg" alt="PomoHub Logo" width="240" height="240" />
   
   **The Ultimate Social Productivity & Focus Application**
   
@@ -173,6 +172,10 @@
 ## 📄 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
+
+<div align="center">
+  <img src="website/public/logos/pomohub-app-logo.svg" alt="PomoHub Logo" width="300" height="80" />
+</div>
 
 <div align="center">
   <br/>
