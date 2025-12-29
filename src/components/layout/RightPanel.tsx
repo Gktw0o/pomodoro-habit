@@ -1,4 +1,4 @@
-import { MessageSquare, Users, Hash, Search, Loader2, UserPlus, Newspaper } from "lucide-react";
+import { MessageSquare, Users, Hash, Search, Loader2, UserPlus, Newspaper, Bell, Check, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { api } from "@/services/api";
 import { format } from "date-fns";
@@ -18,9 +18,18 @@ interface Post {
   created_at: string;
 }
 
+interface FriendRequest {
+  id: string;
+  user_id: string;
+  friend_id: string;
+  status: string;
+  created_at: string;
+  user: User; // The sender
+}
+
 export function RightPanel() {
   const [isOpen, setIsOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState<'feed' | 'search'>('feed');
+  const [activeTab, setActiveTab] = useState<'feed' | 'search' | 'requests'>('feed');
   const [loading, setLoading] = useState(false);
   
   // Feed State
@@ -30,6 +39,9 @@ export function RightPanel() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
 
+  // Requests State
+  const [requests, setRequests] = useState<FriendRequest[]>([]);
+
   const fetchFeed = async () => {
     setLoading(true);
     try {
@@ -37,6 +49,18 @@ export function RightPanel() {
       setPosts(data);
     } catch (error) {
       console.error("Failed to fetch feed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRequests = async () => {
+    setLoading(true);
+    try {
+      const data = await api.get('/friends/requests');
+      setRequests(data);
+    } catch (error) {
+      console.error("Failed to fetch requests:", error);
     } finally {
       setLoading(false);
     }
@@ -66,9 +90,31 @@ export function RightPanel() {
     }
   };
 
+  const handleAcceptRequest = async (requestId: string) => {
+    try {
+      await api.post(`/friends/accept/${requestId}`, {});
+      fetchRequests();
+    } catch (error) {
+      console.error("Failed to accept request:", error);
+      alert("Failed to accept request");
+    }
+  };
+
+  const handleRejectRequest = async (requestId: string) => {
+    try {
+      await api.post(`/friends/reject/${requestId}`, {});
+      fetchRequests();
+    } catch (error) {
+      console.error("Failed to reject request:", error);
+      alert("Failed to reject request");
+    }
+  };
+
   useEffect(() => {
     if (activeTab === 'feed') {
       fetchFeed();
+    } else if (activeTab === 'requests') {
+      fetchRequests();
     }
   }, [activeTab]);
 
@@ -113,6 +159,12 @@ export function RightPanel() {
         >
           Find Friends
         </button>
+        <button
+          onClick={() => setActiveTab('requests')}
+          className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'requests' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'}`}
+        >
+          Requests
+        </button>
       </div>
 
       {/* Content */}
@@ -143,7 +195,7 @@ export function RightPanel() {
               </div>
             )}
           </div>
-        ) : (
+        ) : activeTab === 'search' ? (
           <div className="space-y-4">
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
@@ -183,6 +235,47 @@ export function RightPanel() {
                 <div className="text-center text-zinc-500 text-sm py-4">No users found.</div>
               )}
             </div>
+          </div>
+        ) : (
+          <div className="space-y-2">
+             {loading ? (
+                <div className="flex justify-center py-4"><Loader2 className="animate-spin text-zinc-400" /></div>
+             ) : requests.length > 0 ? (
+                requests.map(request => (
+                  <div key={request.id} className="flex items-center justify-between p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-xs font-bold">
+                        {request.user.username[0].toUpperCase()}
+                      </div>
+                      <div className="overflow-hidden">
+                        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate w-24">{request.user.username}</p>
+                        <p className="text-xs text-zinc-500 truncate w-24">Friend Request</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <button 
+                        onClick={() => handleAcceptRequest(request.id)}
+                        className="p-1.5 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-colors"
+                        title="Accept"
+                      >
+                        <Check size={16} />
+                      </button>
+                      <button 
+                        onClick={() => handleRejectRequest(request.id)}
+                        className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
+                        title="Reject"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  </div>
+                ))
+             ) : (
+                <div className="text-center text-zinc-500 py-8 text-sm">
+                    <Bell className="mx-auto mb-2 opacity-50" />
+                    No pending requests
+                </div>
+             )}
           </div>
         )}
       </div>

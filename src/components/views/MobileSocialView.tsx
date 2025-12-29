@@ -1,4 +1,4 @@
-import { Users, Search, Loader2, Newspaper, UserPlus } from "lucide-react";
+import { Users, Search, Loader2, Newspaper, UserPlus, Bell, Check, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { api } from "@/services/api";
 import { format } from "date-fns";
@@ -18,8 +18,17 @@ interface Post {
   created_at: string;
 }
 
+interface FriendRequest {
+  id: string;
+  user_id: string;
+  friend_id: string;
+  status: string;
+  created_at: string;
+  user: User; // The sender
+}
+
 export function MobileSocialView() {
-  const [activeTab, setActiveTab] = useState<'feed' | 'search'>('feed');
+  const [activeTab, setActiveTab] = useState<'feed' | 'search' | 'requests'>('feed');
   const [loading, setLoading] = useState(false);
   
   // Feed State
@@ -29,6 +38,9 @@ export function MobileSocialView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
 
+  // Requests State
+  const [requests, setRequests] = useState<FriendRequest[]>([]);
+
   const fetchFeed = async () => {
     setLoading(true);
     try {
@@ -36,6 +48,18 @@ export function MobileSocialView() {
       setPosts(data);
     } catch (error) {
       console.error("Failed to fetch feed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRequests = async () => {
+    setLoading(true);
+    try {
+      const data = await api.get('/friends/requests');
+      setRequests(data);
+    } catch (error) {
+      console.error("Failed to fetch requests:", error);
     } finally {
       setLoading(false);
     }
@@ -65,9 +89,33 @@ export function MobileSocialView() {
     }
   };
 
+  const handleAcceptRequest = async (requestId: string) => {
+    try {
+      await api.post(`/friends/accept/${requestId}`, {});
+      // Refresh requests
+      fetchRequests();
+    } catch (error) {
+      console.error("Failed to accept request:", error);
+      alert("Failed to accept request");
+    }
+  };
+
+  const handleRejectRequest = async (requestId: string) => {
+    try {
+      await api.post(`/friends/reject/${requestId}`, {});
+      // Refresh requests
+      fetchRequests();
+    } catch (error) {
+      console.error("Failed to reject request:", error);
+      alert("Failed to reject request");
+    }
+  };
+
   useEffect(() => {
     if (activeTab === 'feed') {
       fetchFeed();
+    } else if (activeTab === 'requests') {
+      fetchRequests();
     }
   }, [activeTab]);
 
@@ -94,6 +142,12 @@ export function MobileSocialView() {
           className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'search' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'}`}
         >
           Find Friends
+        </button>
+        <button
+          onClick={() => setActiveTab('requests')}
+          className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'requests' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'}`}
+        >
+          Requests
         </button>
       </div>
 
@@ -128,7 +182,7 @@ export function MobileSocialView() {
               </div>
             )}
           </div>
-        ) : (
+        ) : activeTab === 'search' ? (
           <div className="space-y-4">
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={20} />
@@ -169,6 +223,49 @@ export function MobileSocialView() {
                 <div className="text-center text-zinc-500 py-8">No users found.</div>
               )}
             </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+             {loading ? (
+                <div className="flex justify-center py-4"><Loader2 className="animate-spin text-zinc-400" /></div>
+             ) : requests.length > 0 ? (
+                requests.map(request => (
+                  <div key={request.id} className="flex items-center justify-between p-3 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-100 dark:border-zinc-800 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-sm font-bold text-zinc-600 dark:text-zinc-300 overflow-hidden">
+                         {request.user.avatar_url ? <img src={request.user.avatar_url} className="w-full h-full object-cover"/> : request.user.username[0].toUpperCase()}
+                      </div>
+                      <div className="overflow-hidden">
+                        <p className="font-medium text-zinc-900 dark:text-zinc-100 truncate w-40">{request.user.username}</p>
+                        <p className="text-xs text-zinc-500 truncate w-40">wants to be friends</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => handleAcceptRequest(request.id)}
+                        className="p-2 text-green-600 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40 rounded-lg transition-colors"
+                        title="Accept"
+                      >
+                        <Check size={20} />
+                      </button>
+                      <button 
+                        onClick={() => handleRejectRequest(request.id)}
+                        className="p-2 text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors"
+                        title="Reject"
+                      >
+                        <X size={20} />
+                      </button>
+                    </div>
+                  </div>
+                ))
+             ) : (
+                <div className="text-center text-zinc-500 py-12 flex flex-col items-center">
+                    <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center mb-4">
+                        <Bell className="opacity-50" size={32} />
+                    </div>
+                    <p className="font-medium">No pending requests</p>
+                </div>
+             )}
           </div>
         )}
       </div>
